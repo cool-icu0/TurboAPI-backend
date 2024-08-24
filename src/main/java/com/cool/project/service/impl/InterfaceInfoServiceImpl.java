@@ -6,12 +6,8 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cool.project.common.ErrorCode;
 import com.cool.project.exception.BusinessException;
 import com.cool.project.model.entity.InterfaceInfo;
-import com.cool.project.model.enums.InterfaceInfoGenderEnum;
-import com.cool.project.model.enums.InterfaceInfoReviewStatusEnum;
-import generator.domain.InterfaceInfo;
 import com.cool.project.service.InterfaceInfoService;
 import com.cool.project.mapper.InterfaceInfoMapper;
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
