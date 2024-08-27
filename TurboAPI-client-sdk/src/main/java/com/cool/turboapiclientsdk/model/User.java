@@ -1,4 +1,4 @@
-package com.cool.turboapiinterface.model;
+package com.cool.turboapiclientsdk.model;
 
 import lombok.Data;
 

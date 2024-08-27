@@ -2,4 +2,7 @@ server:
   port: 8123
   servlet:
     context-path: /api
-
+turboapi:
+  client:
+    access-key: cool
+    secret-key: abcdefg

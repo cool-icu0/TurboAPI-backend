@@ -1,7 +1,6 @@
 package com.cool.turboapiinterface.controller;
-
-import com.cool.turboapiinterface.model.User;
-import com.cool.turboapiinterface.utils.SignUtils;
+import com.cool.turboapiclientsdk.model.User;
+import com.cool.turboapiclientsdk.utils.SignUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;

@@ -1,9 +1,7 @@
-package com.cool.turboapiinterface.utils;
+package com.cool.turboapiclientsdk.utils;
 
 import cn.hutool.crypto.digest.DigestAlgorithm;
 import cn.hutool.crypto.digest.Digester;
-
-import java.util.Map;
 
 /**
  * 签名工具
