@@ -3,10 +3,7 @@ package com.cool.project.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cool.project.annotation.AuthCheck;
-import com.cool.project.common.BaseResponse;
-import com.cool.project.common.DeleteRequest;
-import com.cool.project.common.ErrorCode;
-import com.cool.project.common.ResultUtils;
+import com.cool.project.common.*;
 import com.cool.project.constant.CommonConstant;
 import com.cool.project.exception.BusinessException;
 import com.cool.project.model.dto.interfaceinfo.InterfaceInfoAddRequest;
@@ -14,8 +11,10 @@ import com.cool.project.model.dto.interfaceinfo.InterfaceInfoQueryRequest;
 import com.cool.project.model.dto.interfaceinfo.InterfaceInfoUpdateRequest;
 import com.cool.project.model.entity.InterfaceInfo;
 import com.cool.project.model.entity.User;
+import com.cool.project.model.enums.InterfaceInfoStatusEnum;
 import com.cool.project.service.InterfaceInfoService;
 import com.cool.project.service.UserService;
+import com.cool.turboapiclientsdk.client.TurboApiClient;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -26,7 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
- * 帖子接口
+ * 接口管理
  */
 @RestController
 @RequestMapping("/interfaceInfo")
@@ -38,6 +37,8 @@ public class InterfaceInfoController {
 
     @Resource
     private UserService userService;
+    @Resource
+    private TurboApiClient turboApiClient;
 
     // region 增删改查
 
@@ -193,5 +194,82 @@ public class InterfaceInfoController {
     }
 
     // endregion
+    /**
+     * 发布
+     *
+     * @param idRequest
+     * @param request
+     * @return
+     */
+    @PostMapping("/online")
+    @AuthCheck(mustRole = "admin")
+    public BaseResponse<Boolean> onlineInterfaceInfo(@RequestBody IdRequest idRequest,
+                                                     HttpServletRequest request) {
+        if (idRequest == null || idRequest.getId() <= 0) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        //1.校验接口是否存在
 
+        long id = idRequest.getId();
+        // 判断是否存在
+        InterfaceInfo oldInterfaceInfo = interfaceInfoService.getById(id);
+        if (oldInterfaceInfo == null) {
+            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
+        }
+        //2.判断接口是否可以调用
+        //2.1 创建一个User对象
+        com.cool.turboapiclientsdk.model.User user = new com.cool.turboapiclientsdk.model.User();
+        user.setUsername("test");
+        //2.2 通过turboApiClient的getUsernameByPost方法传入user对象，并将返回的username赋值给username变量
+        String username = turboApiClient.getUserNameByPost(user);
+        //2.3 如果username为空或空白字符串
+        if (StringUtils.isBlank(username)) {
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR, "接口验证失败失败");
+        }
+        InterfaceInfo interfaceInfo = new InterfaceInfo();
+        interfaceInfo.setId(id);
+        //3修改接口数据库中的状态字段为上线
+        interfaceInfo.setStatus(InterfaceInfoStatusEnum.ONLINE.getValue());
+        boolean result = interfaceInfoService.updateById(interfaceInfo);
+        return ResultUtils.success(result);
+    }
+    /**
+     * 下线
+     *
+     * @param idRequest
+     * @param request
+     * @return
+     */
+    @PostMapping("/offline")
+    @AuthCheck(mustRole = "admin")
+    public BaseResponse<Boolean> offlineInterfaceInfo(@RequestBody IdRequest idRequest,
+                                                     HttpServletRequest request) {
+        if (idRequest == null || idRequest.getId() <= 0) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        //1.校验接口是否存在
+
+        long id = idRequest.getId();
+        // 判断是否存在
+        InterfaceInfo oldInterfaceInfo = interfaceInfoService.getById(id);
+        if (oldInterfaceInfo == null) {
+            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
+        }
+        //2.判断接口是否可以调用
+        //2.1 创建一个User对象
+        com.cool.turboapiclientsdk.model.User user = new com.cool.turboapiclientsdk.model.User();
+        user.setUsername("test");
+        //2.2 通过turboApiClient的getUsernameByPost方法传入user对象，并将返回的username赋值给username变量
+        String username = turboApiClient.getUserNameByPost(user);
+        //2.3 如果username为空或空白字符串
+        if (StringUtils.isBlank(username)) {
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR, "接口验证失败失败");
+        }
+        InterfaceInfo interfaceInfo = new InterfaceInfo();
+        interfaceInfo.setId(id);
+        //3修改接口数据库中的状态字段为上线
+        interfaceInfo.setStatus(InterfaceInfoStatusEnum.OFFLINE.getValue());
+        boolean result = interfaceInfoService.updateById(interfaceInfo);
+        return ResultUtils.success(result);
+    }
 }
