@@ -7,6 +7,7 @@ import com.cool.project.common.*;
 import com.cool.project.constant.CommonConstant;
 import com.cool.project.exception.BusinessException;
 import com.cool.project.model.dto.interfaceinfo.InterfaceInfoAddRequest;
+import com.cool.project.model.dto.interfaceinfo.InterfaceInfoInvokeRequest;
 import com.cool.project.model.dto.interfaceinfo.InterfaceInfoQueryRequest;
 import com.cool.project.model.dto.interfaceinfo.InterfaceInfoUpdateRequest;
 import com.cool.project.model.entity.InterfaceInfo;
@@ -15,6 +16,7 @@ import com.cool.project.model.enums.InterfaceInfoStatusEnum;
 import com.cool.project.service.InterfaceInfoService;
 import com.cool.project.service.UserService;
 import com.cool.turboapiclientsdk.client.TurboApiClient;
+import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -271,5 +273,44 @@ public class InterfaceInfoController {
         interfaceInfo.setStatus(InterfaceInfoStatusEnum.OFFLINE.getValue());
         boolean result = interfaceInfoService.updateById(interfaceInfo);
         return ResultUtils.success(result);
+    }
+
+    /**
+     * 测试调用
+     *
+     * @param interfaceInfoInvokeRequest
+     * @param request
+     * @return
+     */
+    @PostMapping("/invoke")
+    @AuthCheck(mustRole = "admin")
+    public BaseResponse<Object> offlineInterfaceInfo(@RequestBody InterfaceInfoInvokeRequest interfaceInfoInvokeRequest,
+                                                      HttpServletRequest request) {
+        if (interfaceInfoInvokeRequest == null || interfaceInfoInvokeRequest.getId() <= 0) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        //1.校验接口是否存在
+
+        long id = interfaceInfoInvokeRequest.getId();
+        //获取用户请求函数
+        String userRequestParams = interfaceInfoInvokeRequest.getRequestParams();
+        // 判断是否存在
+        InterfaceInfo oldInterfaceInfo = interfaceInfoService.getById(id);
+        if (oldInterfaceInfo == null) {
+            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
+        }
+        if (oldInterfaceInfo.getStatus() == InterfaceInfoStatusEnum.OFFLINE.getValue()) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "接口已关闭");
+        }
+        //2.判断接口是否可以调用
+        //2.1 创建一个User对象
+        User loginUser = userService.getLoginUser(request);
+        String accessKey = loginUser.getAccessKey();
+        String secretKey = loginUser.getSecretKey();
+        TurboApiClient tempClient = new TurboApiClient(accessKey, secretKey);
+        Gson gson = new Gson();
+        com.cool.turboapiclientsdk.model.User user = gson.fromJson(userRequestParams, com.cool.turboapiclientsdk.model.User.class);
+        String userNameByPost = tempClient.getUserNameByPost(user);
+        return ResultUtils.success(userNameByPost);
     }
 }

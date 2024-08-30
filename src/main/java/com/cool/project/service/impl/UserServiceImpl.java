@@ -1,5 +1,7 @@
 package com.cool.project.service.impl;
 
+import cn.hutool.core.util.RandomUtil;
+import cn.hutool.crypto.digest.DigestUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cool.project.common.ErrorCode;
@@ -61,10 +63,16 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             }
             // 2. 加密
             String encryptPassword = DigestUtils.md5DigestAsHex((SALT + userPassword).getBytes());
+            //3.分配随机的accessKey和secretKey
+            // 使用MD5加密，避免用户明文密码被数据库记录
+            String accessKey = DigestUtil.md5Hex((SALT + userAccount + RandomUtil.randomNumbers(5)));
+            String secretKey = DigestUtil.md5Hex((SALT + userAccount + RandomUtil.randomNumbers(8)));
             // 3. 插入数据
             User user = new User();
             user.setUserAccount(userAccount);
             user.setUserPassword(encryptPassword);
+            user.setAccessKey(accessKey);
+            user.setSecretKey(secretKey);
             boolean saveResult = this.save(user);
             if (!saveResult) {
                 throw new BusinessException(ErrorCode.SYSTEM_ERROR, "注册失败，数据库错误");
