@@ -283,8 +283,8 @@ public class InterfaceInfoController {
      * @return
      */
     @PostMapping("/invoke")
-    @AuthCheck(mustRole = "admin")
-    public BaseResponse<Object> offlineInterfaceInfo(@RequestBody InterfaceInfoInvokeRequest interfaceInfoInvokeRequest,
+//    @AuthCheck(mustRole = "admin")
+    public BaseResponse<Object> invokeInterfaceInfo(@RequestBody InterfaceInfoInvokeRequest interfaceInfoInvokeRequest,
                                                       HttpServletRequest request) {
         if (interfaceInfoInvokeRequest == null || interfaceInfoInvokeRequest.getId() <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
@@ -293,7 +293,8 @@ public class InterfaceInfoController {
 
         long id = interfaceInfoInvokeRequest.getId();
         //获取用户请求函数
-        String userRequestParams = interfaceInfoInvokeRequest.getRequestParams();
+        String userRequestParams = interfaceInfoInvokeRequest.getUserRequestParams();
+//        String userRequestParams =
         // 判断是否存在
         InterfaceInfo oldInterfaceInfo = interfaceInfoService.getById(id);
         if (oldInterfaceInfo == null) {
@@ -311,6 +312,7 @@ public class InterfaceInfoController {
         Gson gson = new Gson();
         com.cool.turboapiclientsdk.model.User user = gson.fromJson(userRequestParams, com.cool.turboapiclientsdk.model.User.class);
         String userNameByPost = tempClient.getUserNameByPost(user);
+        System.out.println("userNameByPost = " + userNameByPost);
         return ResultUtils.success(userNameByPost);
     }
 }
