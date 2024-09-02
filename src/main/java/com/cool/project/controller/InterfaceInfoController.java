@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cool.project.annotation.AuthCheck;
 import com.cool.project.common.*;
 import com.cool.project.constant.CommonConstant;
+import com.cool.project.constant.UserConstant;
 import com.cool.project.exception.BusinessException;
 import com.cool.project.model.dto.interfaceinfo.InterfaceInfoAddRequest;
 import com.cool.project.model.dto.interfaceinfo.InterfaceInfoInvokeRequest;
@@ -150,8 +151,8 @@ public class InterfaceInfoController {
      * @param interfaceInfoQueryRequest
      * @return
      */
-    @AuthCheck(mustRole = "admin")
     @GetMapping("/list")
+    @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
     public BaseResponse<List<InterfaceInfo>> listInterfaceInfo(InterfaceInfoQueryRequest interfaceInfoQueryRequest) {
         InterfaceInfo interfaceInfoQuery = new InterfaceInfo();
         if (interfaceInfoQueryRequest != null) {
@@ -204,7 +205,7 @@ public class InterfaceInfoController {
      * @return
      */
     @PostMapping("/online")
-    @AuthCheck(mustRole = "admin")
+    @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
     public BaseResponse<Boolean> onlineInterfaceInfo(@RequestBody IdRequest idRequest,
                                                      HttpServletRequest request) {
         if (idRequest == null || idRequest.getId() <= 0) {
@@ -243,7 +244,7 @@ public class InterfaceInfoController {
      * @return
      */
     @PostMapping("/offline")
-    @AuthCheck(mustRole = "admin")
+    @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
     public BaseResponse<Boolean> offlineInterfaceInfo(@RequestBody IdRequest idRequest,
                                                      HttpServletRequest request) {
         if (idRequest == null || idRequest.getId() <= 0) {

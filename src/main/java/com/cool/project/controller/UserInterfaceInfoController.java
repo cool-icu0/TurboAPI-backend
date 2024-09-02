@@ -5,16 +5,15 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cool.project.annotation.AuthCheck;
 import com.cool.project.common.*;
 import com.cool.project.constant.CommonConstant;
+import com.cool.project.constant.UserConstant;
 import com.cool.project.exception.BusinessException;
 import com.cool.project.model.dto.userinterfaceinfo.UserInterfaceInfoAddRequest;
 import com.cool.project.model.dto.userinterfaceinfo.UserInterfaceInfoQueryRequest;
 import com.cool.project.model.dto.userinterfaceinfo.UserInterfaceInfoUpdateRequest;
 import com.cool.project.model.entity.UserInterfaceInfo;
 import com.cool.project.model.entity.User;
-import com.cool.project.service.InterfaceInfoService;
+import com.cool.project.service.UserInterfaceInfoService;
 import com.cool.project.service.UserService;
-import com.cool.turboapiclientsdk.client.TurboApiClient;
-import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -33,12 +32,10 @@ import java.util.List;
 public class UserInterfaceInfoController {
 
     @Resource
-    private InterfaceInfoService userInterfaceInfoService;
+    private UserInterfaceInfoService userInterfaceInfoService;
 
     @Resource
     private UserService userService;
-    @Resource
-    private TurboApiClient turboApiClient;
 
     // region 增删改查
 
@@ -50,6 +47,7 @@ public class UserInterfaceInfoController {
      * @return
      */
     @PostMapping("/add")
+    @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
     public BaseResponse<Long> addInterfaceInfo(@RequestBody UserInterfaceInfoAddRequest userInterfaceInfoAddRequest, HttpServletRequest request) {
         if (userInterfaceInfoAddRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
@@ -57,7 +55,7 @@ public class UserInterfaceInfoController {
         UserInterfaceInfo userInterfaceInfo = new UserInterfaceInfo();
         BeanUtils.copyProperties(userInterfaceInfoAddRequest, userInterfaceInfo);
         // 校验
-        userInterfaceInfoService.validInterfaceInfo(userInterfaceInfo, true);
+        userInterfaceInfoService.validUserInterfaceInfo(userInterfaceInfo, true);
         User loginUser = userService.getLoginUser(request);
         userInterfaceInfo.setUserId(loginUser.getId());
         boolean result = userInterfaceInfoService.save(userInterfaceInfo);
@@ -76,6 +74,7 @@ public class UserInterfaceInfoController {
      * @return
      */
     @PostMapping("/delete")
+    @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
     public BaseResponse<Boolean> deleteInterfaceInfo(@RequestBody DeleteRequest deleteRequest, HttpServletRequest request) {
         if (deleteRequest == null || deleteRequest.getId() <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
@@ -103,15 +102,16 @@ public class UserInterfaceInfoController {
      * @return
      */
     @PostMapping("/update")
+    @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
     public BaseResponse<Boolean> updateInterfaceInfo(@RequestBody UserInterfaceInfoUpdateRequest userInterfaceInfoUpdateRequest,
-                                            HttpServletRequest request) {
+                                                     HttpServletRequest request) {
         if (userInterfaceInfoUpdateRequest == null || userInterfaceInfoUpdateRequest.getId() <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         UserInterfaceInfo userInterfaceInfo = new UserInterfaceInfo();
         BeanUtils.copyProperties(userInterfaceInfoUpdateRequest, userInterfaceInfo);
         // 参数校验
-        userInterfaceInfoService.validInterfaceInfo(userInterfaceInfo, false);
+        userInterfaceInfoService.validUserInterfaceInfo(userInterfaceInfo, false);
         User user = userService.getLoginUser(request);
         long id = userInterfaceInfoUpdateRequest.getId();
         // 判断是否存在
@@ -134,6 +134,7 @@ public class UserInterfaceInfoController {
      * @return
      */
     @GetMapping("/get")
+    @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
     public BaseResponse<UserInterfaceInfo> getInterfaceInfoById(long id) {
         if (id <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
@@ -148,8 +149,8 @@ public class UserInterfaceInfoController {
      * @param userInterfaceInfoQueryRequest
      * @return
      */
-    @AuthCheck(mustRole = "admin")
     @GetMapping("/list")
+    @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
     public BaseResponse<List<UserInterfaceInfo>> listInterfaceInfo(UserInterfaceInfoQueryRequest userInterfaceInfoQueryRequest) {
         UserInterfaceInfo userInterfaceInfoQuery = new UserInterfaceInfo();
         if (userInterfaceInfoQueryRequest != null) {
@@ -168,6 +169,7 @@ public class UserInterfaceInfoController {
      * @return
      */
     @GetMapping("/list/page")
+    @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
     public BaseResponse<Page<UserInterfaceInfo>> listInterfaceInfoByPage(UserInterfaceInfoQueryRequest userInterfaceInfoQueryRequest, HttpServletRequest request) {
         if (userInterfaceInfoQueryRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);

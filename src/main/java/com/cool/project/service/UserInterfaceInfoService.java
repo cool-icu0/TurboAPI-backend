@@ -9,5 +9,17 @@ import com.cool.project.model.entity.UserInterfaceInfo;
 * @createDate 2024-09-01 14:03:12
 */
 public interface UserInterfaceInfoService extends IService<UserInterfaceInfo> {
+    /**
+     * 验证接口调用信息
+     * @param userInterfaceInfo
+     * @param add
+     */
     void validUserInterfaceInfo(UserInterfaceInfo userInterfaceInfo, boolean add);
+    /**
+     * 调用接口统计
+     * @param interfaceInfoId
+     * @param userId
+     * @return
+     */
+    boolean invokeCount(long interfaceInfoId, long userId);
 }
