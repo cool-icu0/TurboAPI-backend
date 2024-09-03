@@ -7,7 +7,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cool.project.common.ErrorCode;
 import com.cool.project.exception.BusinessException;
 import com.cool.project.mapper.UserMapper;
-import com.cool.project.model.entity.User;
+import com.cool.turboapicommon.model.entity.User;
 import com.cool.project.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;

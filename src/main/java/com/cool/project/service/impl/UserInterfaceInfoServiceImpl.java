@@ -5,13 +5,9 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cool.project.common.ErrorCode;
 import com.cool.project.exception.BusinessException;
 import com.cool.project.mapper.UserInterfaceInfoMapper;
-import com.cool.project.model.entity.InterfaceInfo;
-import com.cool.project.model.entity.UserInterfaceInfo;
 import com.cool.project.service.UserInterfaceInfoService;
-import org.apache.commons.lang3.StringUtils;
+import com.cool.turboapicommon.model.entity.UserInterfaceInfo;
 import org.springframework.stereotype.Service;
-
-import java.util.Date;
 
 /**
  * @author Cool

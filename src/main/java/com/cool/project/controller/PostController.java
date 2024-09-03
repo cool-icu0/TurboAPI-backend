@@ -13,7 +13,7 @@ import com.cool.project.model.dto.post.PostAddRequest;
 import com.cool.project.model.dto.post.PostQueryRequest;
 import com.cool.project.model.dto.post.PostUpdateRequest;
 import com.cool.project.model.entity.Post;
-import com.cool.project.model.entity.User;
+import com.cool.turboapicommon.model.entity.User;
 import com.cool.project.service.PostService;
 import com.cool.project.service.UserService;
 import lombok.extern.slf4j.Slf4j;

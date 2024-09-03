@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.cool.project.mapper.InterfaceInfoMapper">
 
-    <resultMap id="BaseResultMap" type="com.cool.project.model.entity.InterfaceInfo">
+    <resultMap id="BaseResultMap" type="com.cool.turboapicommon.model.entity.InterfaceInfo">
             <id property="id" column="id" jdbcType="BIGINT"/>
             <result property="name" column="name" jdbcType="VARCHAR"/>
             <result property="description" column="description" jdbcType="VARCHAR"/>

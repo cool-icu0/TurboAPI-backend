@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.cool.project.annotation.AuthCheck;
 import com.cool.project.common.ErrorCode;
 import com.cool.project.exception.BusinessException;
-import com.cool.project.model.entity.User;
+import com.cool.turboapicommon.model.entity.User;
 import com.cool.project.service.UserService;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;

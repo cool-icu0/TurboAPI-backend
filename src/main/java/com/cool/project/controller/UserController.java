@@ -9,7 +9,7 @@ import com.cool.project.common.ErrorCode;
 import com.cool.project.common.ResultUtils;
 import com.cool.project.exception.BusinessException;
 import com.cool.project.model.dto.user.*;
-import com.cool.project.model.entity.User;
+import com.cool.turboapicommon.model.entity.User;
 import com.cool.project.model.vo.UserVO;
 import com.cool.project.service.UserService;
 import org.apache.commons.lang3.StringUtils;

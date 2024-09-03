@@ -2,7 +2,7 @@ package com.cool.project.service;
 
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.cool.project.model.entity.User;
+import com.cool.turboapicommon.model.entity.User;
 
 import javax.servlet.http.HttpServletRequest;
 

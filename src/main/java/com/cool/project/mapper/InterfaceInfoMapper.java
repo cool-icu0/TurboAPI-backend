@@ -1,6 +1,6 @@
 package com.cool.project.mapper;
 
-import com.cool.project.model.entity.InterfaceInfo;
+import com.cool.turboapicommon.model.entity.InterfaceInfo;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**

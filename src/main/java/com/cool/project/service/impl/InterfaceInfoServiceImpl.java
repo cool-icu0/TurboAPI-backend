@@ -5,7 +5,7 @@ import java.util.Date;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cool.project.common.ErrorCode;
 import com.cool.project.exception.BusinessException;
-import com.cool.project.model.entity.InterfaceInfo;
+import com.cool.turboapicommon.model.entity.InterfaceInfo;
 import com.cool.project.service.InterfaceInfoService;
 import com.cool.project.mapper.InterfaceInfoMapper;
 import org.apache.commons.lang3.StringUtils;

@@ -1,7 +1,7 @@
 package com.cool.project.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.cool.project.model.entity.UserInterfaceInfo;
+import com.cool.turboapicommon.model.entity.UserInterfaceInfo;
 
 /**
 * @author Cool

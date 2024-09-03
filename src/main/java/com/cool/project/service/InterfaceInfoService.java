@@ -1,6 +1,6 @@
 package com.cool.project.service;
 
-import com.cool.project.model.entity.InterfaceInfo;
+import com.cool.turboapicommon.model.entity.InterfaceInfo;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**

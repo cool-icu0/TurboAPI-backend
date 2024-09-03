@@ -1,4 +1,4 @@
-package com.cool.project.service;
+package com.cool.turboapicommon.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.cool.turboapicommon.model.entity.UserInterfaceInfo;
@@ -8,13 +8,7 @@ import com.cool.turboapicommon.model.entity.UserInterfaceInfo;
 * @description 针对表【user_interface_info(用户调用接口关系)】的数据库操作Service
 * @createDate 2024-09-01 14:03:12
 */
-public interface UserInterfaceInfoService extends IService<UserInterfaceInfo> {
-    /**
-     * 验证接口调用信息
-     * @param userInterfaceInfo
-     * @param add
-     */
-    void validUserInterfaceInfo(UserInterfaceInfo userInterfaceInfo, boolean add);
+public interface InnerUserInterfaceInfoService extends IService<UserInterfaceInfo> {
     /**
      * 调用接口统计
      * @param interfaceInfoId

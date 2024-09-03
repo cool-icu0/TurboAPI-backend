@@ -1,5 +1,4 @@
-package com.cool.project.model.vo;
-
+package com.cool.turboapicommon.model.vo;
 import com.cool.turboapicommon.model.entity.Post;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

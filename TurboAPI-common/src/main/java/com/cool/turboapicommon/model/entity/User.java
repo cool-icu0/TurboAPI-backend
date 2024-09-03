@@ -1,4 +1,4 @@
-package com.cool.project.model.entity;
+package com.cool.turboapicommon.model.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
