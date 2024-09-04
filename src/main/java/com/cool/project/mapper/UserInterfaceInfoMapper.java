@@ -3,6 +3,8 @@ package com.cool.project.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.cool.turboapicommon.model.entity.UserInterfaceInfo;
 
+import java.util.List;
+
 /**
 * @author Cool
 * @description 针对表【user_interface_info(用户调用接口关系)】的数据库操作Mapper
@@ -10,7 +12,7 @@ import com.cool.turboapicommon.model.entity.UserInterfaceInfo;
 * @Entity generator.domain.UserInterfaceInfo
 */
 public interface UserInterfaceInfoMapper extends BaseMapper<UserInterfaceInfo> {
-
+    List<UserInterfaceInfo> listTopInvokeInterfaceInfo(int limit);
 }
 
 
