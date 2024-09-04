@@ -3,7 +3,7 @@ package com.cool.turboapicommon.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.cool.turboapicommon.model.entity.InterfaceInfo;
 
-public interface InnerInterfaceInfoService extends IService<InterfaceInfo> {
+public interface InnerInterfaceInfoService {
     /**
      * 查询接口是否存在
      * @param path 请求路径

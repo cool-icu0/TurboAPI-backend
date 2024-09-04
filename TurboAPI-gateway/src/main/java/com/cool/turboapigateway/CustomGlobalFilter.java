@@ -1,7 +1,13 @@
 package com.cool.turboapigateway;
 
 import com.cool.turboapiclientsdk.utils.SignUtils;
+import com.cool.turboapicommon.model.entity.InterfaceInfo;
+import com.cool.turboapicommon.model.entity.User;
+import com.cool.turboapicommon.service.InnerInterfaceInfoService;
+import com.cool.turboapicommon.service.InnerUserInterfaceInfoService;
+import com.cool.turboapicommon.service.InnerUserService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.reactivestreams.Publisher;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
@@ -30,6 +36,13 @@ import java.util.List;
 @Component
 @Slf4j
 public class CustomGlobalFilter implements GlobalFilter, Ordered {
+
+    @DubboReference
+    private InnerUserService innerUserService;
+    @DubboReference
+    private InnerInterfaceInfoService innerInterfaceInfoService;
+    @DubboReference
+    private InnerUserInterfaceInfoService innerUserInterfaceInfoService;
 
     private static final List<String> IP_WHITE_LIST = Arrays.asList("127.0.0.1");
     private static final String INTERFACE_HOST = "http://localhost:8123";
@@ -64,8 +77,15 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
         String sign = headers.getFirst("sign");
         String body = headers.getFirst("body");
 
-        //  实际情况应该是去数据库中查是否已分配给用户
-        if (! "cool".equals(accessKey)) {
+        // todo 实际情况应该是去数据库中查是否已分配给用户
+        User invokeUser = null;
+        try {
+            //调用内部服务，根据访问秘钥获取用户信息
+            invokeUser = innerUserService.getInvokeUser(accessKey);
+        } catch (Exception e) {
+            log.error("getInvokeUser error", e);
+        }
+        if (invokeUser == null){
             return handleNoAuth(response);
         }
         // 直接校验如果随机数大于1万，则抛出异常，并提示"无权限"
@@ -80,20 +100,30 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
             return handleNoAuth(response);
         }
 
-        //        if (timestamp) {}
         // todo 实际情况中是从数据库中查出 secretKey
-        String serverSign = SignUtils.genSign(body, "abcdefg");
+        String secretKey = invokeUser.getSecretKey();
+        String serverSign = SignUtils.genSign(body,secretKey );
         // 如果生成的签名不一致，则抛出异常，并提示"无权限"
-        if (!sign.equals(serverSign)) {
+        if (sign==null || !serverSign.equals(sign)){
             return handleNoAuth(response);
         }
 
         //todo 5. 请求模拟接口是否存在
+        InterfaceInfo interfaceInfo = null;
+        try {
+            interfaceInfo = innerInterfaceInfoService.getInterfaceInfo(path, method);
+        } catch (Exception e) {
+            log.error("getInterfaceInfo error", e);
+        }
+        if (interfaceInfo == null) {
+            return handleInvokeError(response);
+        }
 
+        //todo 判断是否有调用次数
         // 6. 请求转发，调用模拟接口
 //        Mono<Void> filter = chain.filter(exchange);
         //调用成功后输入一个响应日志
-        return handleResponse(exchange,chain);
+        return handleResponse(exchange,chain,interfaceInfo.getId(),invokeUser.getId());
     }
 
     /**
@@ -102,7 +132,7 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
      * @param chain
      * @return
      */
-    public Mono<Void> handleResponse(ServerWebExchange exchange,GatewayFilterChain chain) {
+    public Mono<Void> handleResponse(ServerWebExchange exchange,GatewayFilterChain chain,long interfaceId,long userId) {
         try{
             //获取原始的响应对象
             ServerHttpResponse originalResponse = exchange.getResponse();
@@ -124,6 +154,12 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
                             Flux<? extends DataBuffer> fluxBody = Flux.from(body);
                             return super.writeWith(fluxBody.map(dataBuffer -> {
                                 // 7. todo 调用成功，接口调用次数+1 invokeCount
+                                try{
+                                    innerUserInterfaceInfoService.invokeCount(interfaceId,userId);
+                                }catch (Exception e){
+                                    log.error("invokeCount error",e);
+                                }
+
                                 byte[] content = new byte[dataBuffer.readableByteCount()];
                                 dataBuffer.read(content);
                                 //释放掉内存
